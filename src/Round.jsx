@@ -12,6 +12,8 @@ import { loadDraft, saveDraft, clearDraft } from './lib/draft'
 import { getTargetById } from './lib/targets'
 import { getPlayerId } from './lib/playerId'
 import SandboxFrame from './SandboxFrame'
+import Modal from './Modal'
+import Vistool from './Vistool'
 
 // Single combined editor, CSSBattle-style: players write markup and a
 // <style> block together instead of switching between separate HTML/CSS
@@ -90,6 +92,7 @@ export default function Round() {
   // whichever message the player actually saw, not to redraw mid-countdown.
   const [votingColor, setVotingColor] = useState(null)
   const [copiedColor, setCopiedColor] = useState(null)
+  const [vistoolOpen, setVistoolOpen] = useState(false)
   const selfAutoSubmitFired = useRef(false)
   const othersAutoSubmitFired = useRef(false)
   const copiedTimeoutRef = useRef(null)
@@ -251,6 +254,14 @@ export default function Round() {
     Promise.allSettled(pending.map((p) => submitEntry(code, round.roundKey, p.id, '')))
   }, [now, round, lobby, code, playerId])
 
+  // Force the Vis Tool closed the instant the timer hits zero, so it can't be
+  // left covering the screen while auto-submit and the transition to voting
+  // happen underneath it.
+  useEffect(() => {
+    if (!round) return
+    if (now >= round.endsAt) setVistoolOpen(false)
+  }, [now, round])
+
   if (lobby === undefined || round === undefined) {
     return (
       <div className="flex flex-col items-center justify-center grow p-8">
@@ -303,7 +314,7 @@ export default function Round() {
   }
 
   return (
-    <div className="flex flex-col grow w-full p-8 gap-4">
+    <div className="flex flex-col h-[calc(100vh-73px)] overflow-hidden w-full p-8 gap-4">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Round in progress</h2>
         <div className="flex items-center gap-4">
@@ -325,8 +336,18 @@ export default function Round() {
                   : timeLabel}
           </p>
           <p className="text-sm text-slate-600 dark:text-slate-400">Lobby: <span className="font-mono">{lobby.code}</span></p>
+          <button
+            onClick={() => setVistoolOpen(true)}
+            className="px-3 py-1.5 text-sm bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-medium rounded-md transition-colors"
+          >
+            Vis Tool
+          </button>
         </div>
       </div>
+
+      <Modal open={vistoolOpen} onClose={() => setVistoolOpen(false)}>
+        <Vistool />
+      </Modal>
 
       {error && (
         <div className="p-3 rounded-md bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 text-sm">
@@ -384,14 +405,18 @@ export default function Round() {
             </div>
             <div
               ref={stageRef}
-              className="grow min-h-[240px] flex items-center justify-center rounded-md overflow-hidden border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-900"
+              className="grow min-h-[240px] flex items-center justify-center"
             >
               {/* Sized in JS (see useFitBoxSize) to the largest 4:3 box that
                   fits the available area, rather than filling the whole area
                   and letting object-contain letterbox inside it — same
-                  approach as Results.jsx's stage/frame. */}
+                  approach as Results.jsx's stage/frame. The border/background
+                  live on this sized box itself (not the outer stage div) so
+                  the visible frame always hugs the image/preview exactly,
+                  with no letterboxed bars showing a different color on the
+                  sides when the box is narrower than the available width. */}
               <div
-                className="relative"
+                className="relative rounded-md overflow-hidden border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-900"
                 style={boxSize ? { width: boxSize.width, height: boxSize.height } : { width: '100%', aspectRatio: '4 / 3' }}
               >
                 {showTarget ? (
