@@ -21,12 +21,16 @@
 //     that hand-off entirely.
 // className adds any extra styling on top (e.g. sandbox borders are the
 // caller's job, not this component's — see each call site).
-export default function SandboxFrame({ html = '', css = '', title = 'submission preview', className = '' }) {
+//
+// `html` is the player's single combined editor field (markup + its own
+// <style> block together) and is dropped into the body as-is — a <style>
+// tag is valid there, so it doesn't need to be hoisted into <head> or
+// concatenated with a separate CSS string.
+export default function SandboxFrame({ html = '', title = 'submission preview', className = '' }) {
   const srcDoc = `<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
-    <style>${css}</style>
   </head>
   <body>${html}</body>
 </html>`

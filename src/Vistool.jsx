@@ -135,7 +135,7 @@ export default function Vistool() {
   );
 };
   return (
-    <div className="flex grow w-full h-[calc(100vh-73px)]">
+    <div className="flex grow w-full h-full">
       <Navbar type="Topics" items={Topics} />
 
       <div className="flex flex-col grow p-8 overflow-y-auto scroll-smooth">

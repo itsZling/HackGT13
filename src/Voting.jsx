@@ -34,15 +34,19 @@ export default function Voting() {
     return subscribeRound(code, setRound)
   }, [code])
 
+  // Scoped by round.roundKey, not the lobby code: the code is reused across
+  // every round this lobby plays, but submissions/votes are keyed per-round
+  // (see lib/lobby.js's startRound) so an earlier round's data can never
+  // satisfy this round's queries.
   useEffect(() => {
-    if (!code) return
-    return subscribeSubmissions(code, setSubmissions)
-  }, [code])
+    if (!round?.roundKey) return
+    return subscribeSubmissions(round.roundKey, setSubmissions)
+  }, [round?.roundKey])
 
   useEffect(() => {
-    if (!code) return
-    return subscribeVotes(code, setVotes)
-  }, [code])
+    if (!round?.roundKey) return
+    return subscribeVotes(round.roundKey, setVotes)
+  }, [round?.roundKey])
 
   // Same every-client-races-to-write, no-elected-writer pattern as Round's
   // round -> voting flip. Two independent triggers move on to results:
@@ -91,9 +95,10 @@ export default function Voting() {
   const timeUp = round ? now >= round.votingEndsAt : false
 
   async function handleVote(votedForPlayerId) {
+    if (!round?.roundKey) return
     setError('')
     try {
-      await castVote(code, playerId, votedForPlayerId)
+      await castVote(round.roundKey, playerId, votedForPlayerId)
     } catch (err) {
       setError(err.message)
     }
@@ -144,7 +149,7 @@ export default function Voting() {
                 {isOwnSubmission ? <strong>{name} (you — can't vote for yourself)</strong> : name}
               </div>
               <div className="relative grow min-h-0">
-                <SandboxFrame html={submission.html} css={submission.css} title={`${name}'s submission`} />
+                <SandboxFrame html={submission.html} title={`${name}'s submission`} />
               </div>
               {/* Sits on top of the whole card, including the iframe — clicks
                   inside an iframe never bubble to the parent document, so

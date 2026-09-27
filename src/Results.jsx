@@ -76,15 +76,19 @@ export default function Results() {
     return subscribeRound(code, setRound)
   }, [code])
 
+  // Scoped by round.roundKey, not the lobby code: the code is reused across
+  // every round this lobby plays, but submissions/votes are keyed per-round
+  // (see lib/lobby.js's startRound) so an earlier round's data can never
+  // resurface as this round's results.
   useEffect(() => {
-    if (!code) return
-    return subscribeSubmissions(code, setSubmissions)
-  }, [code])
+    if (!round?.roundKey) return
+    return subscribeSubmissions(round.roundKey, setSubmissions)
+  }, [round?.roundKey])
 
   useEffect(() => {
-    if (!code) return
-    return subscribeVotes(code, setVotes)
-  }, [code])
+    if (!round?.roundKey) return
+    return subscribeVotes(round.roundKey, setVotes)
+  }, [round?.roundKey])
 
   if (!code) {
     return (
@@ -259,7 +263,6 @@ export default function Results() {
             ) : activeSubmission ? (
               <SandboxFrame
                 html={activeSubmission.html}
-                css={activeSubmission.css}
                 title={`${playersById.get(activeWinnerId)?.name ?? 'winner'}'s submission`}
               />
             ) : (

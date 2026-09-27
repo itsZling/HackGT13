@@ -137,7 +137,12 @@ export async function leaveLobby(code, playerId) {
   await updateDoc(ref, updates);
 }
 
-// Round doc id matches the lobby code, one lobby = one round at a time.
+// Round doc id matches the lobby code, one lobby = one round at a time — but
+// a lobby can play many rounds back to back ("Return to Lobby" -> Start
+// again), all reusing that same rounds/{code} doc. roundKey gives each of
+// those plays its own identity so Submission/Vote docs (which live in their
+// own collections, keyed off this value rather than the doc they're nested
+// under) can't be mistaken for a later round's — see submission.js/vote.js.
 export async function startRound(code) {
   const lobbyRef = doc(db, "lobbies", code);
   const lobbySnap = await getDoc(lobbyRef);
@@ -148,11 +153,13 @@ export async function startRound(code) {
   const timeLimit = lobby.settings?.timeLimit ?? 120;
   const difficulty = lobby.settings?.difficulty ?? "easy";
   const targetId = pickRandomTargetId(difficulty);
+  const roundKey = crypto.randomUUID();
 
   const batch = writeBatch(db);
   batch.update(lobbyRef, { status: "round" });
   batch.set(doc(db, "rounds", code), {
     lobbyId: code,
+    roundKey,
     targetId,
     startedAt: serverTimestamp(),
     endsAt: Date.now() + timeLimit * 1000,

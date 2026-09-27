@@ -12,8 +12,8 @@ export function countVotes(votes) {
   return counts
 }
 
-// Lines of code in a submission's HTML+CSS, used only to break a vote tie
-// (see resolveWinners). Blank lines don't count as "code" so incidental
+// Lines of code in a submission, used only to break a vote tie (see
+// resolveWinners). Blank lines don't count as "code" so incidental
 // whitespace can't tip a tie.
 export function countLines(text) {
   return (text || '').split('\n').filter((line) => line.trim().length > 0).length
@@ -25,7 +25,7 @@ export function countLines(text) {
 // Always returns an array — a single outright winner is an array of one, a
 // tie (unbroken by votes or lines) is an array of several.
 //
-// `submissionsByPlayerId` maps playerId -> { html, css }.
+// `submissionsByPlayerId` maps playerId -> { html }.
 export function resolveWinners(votes, submissionsByPlayerId) {
   const counts = countVotes(votes)
   if (counts.size === 0) return []
@@ -40,7 +40,7 @@ export function resolveWinners(votes, submissionsByPlayerId) {
   const lineCounts = new Map(
     topVoted.map((playerId) => {
       const submission = submissionsByPlayerId[playerId]
-      const lines = submission ? countLines(submission.html) + countLines(submission.css) : Infinity
+      const lines = submission ? countLines(submission.html) : Infinity
       return [playerId, lines]
     })
   )
