@@ -135,7 +135,7 @@ export default function Vistool() {
   );
 };
   return (
-    <div className="flex grow w-full h-full">
+    <div className="flex grow w-full h-[calc(100vh-73px)]">
       <Navbar type="Topics" items={Topics} />
 
       <div className="flex flex-col grow p-8 overflow-y-auto scroll-smooth">
@@ -284,7 +284,7 @@ export default function Vistool() {
             </p>
             <div className="flex items-center text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
               <span>border: <span className="text-sky-600 dark:text-sky-400">{borderWidth}px</span> <span className="text-emerald-600 dark:text-emerald-400">{borderStyle}</span> <span className="text-purple-600 dark:text-purple-400">{borderColor}</span>;</span>
-              <CopyButton textToCopy={`border: ${borderWidth}px ${borderStyle}${borderColor};`} />
+              <CopyButton textToCopy={`border: ${borderWidth}px ${borderStyle} ${borderColor};`} />
             </div>
 
             <div className="flex gap-8">
@@ -370,12 +370,12 @@ export default function Vistool() {
             <div className="flex gap-4 mb-8">
               <div className='flex items-center w-fit text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm'>
                 <span>width: <span className="text-sky-600 dark:text-sky-400">{dimWidth}px</span>;</span>
-                <CopyButton textToCopy={`width: ${dimWidth};`} />
+                <CopyButton textToCopy={`width: ${dimWidth}px;`} />
               </div>
 
               <div className='flex items-center w-fit text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm'>
                 <span>height: <span className="text-emerald-600 dark:text-emerald-400">{dimHeight}px</span>;</span>
-                <CopyButton textToCopy={`height: ${dimHeight};`} />
+                <CopyButton textToCopy={`height: ${dimHeight}px;`} />
               </div>
 
             </div>
@@ -499,7 +499,7 @@ export default function Vistool() {
 
             <div className='flex items-center w-fit text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm'>
                 <span>flex-direction: <span className="text-sky-600 dark:text-sky-400">{flexDir}</span>;</span>
-                <CopyButton textToCopy={`flex: ${flexDir};`} />
+                <CopyButton textToCopy={`flex-direction: ${flexDir};`} />
             </div>
             
             <div className="flex gap-8">
@@ -866,7 +866,7 @@ export default function Vistool() {
 
             <div className="flex items-center text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
               <span>margin: <span className="text-sky-600 dark:text-sky-400">{marginAll}px</span>;</span>
-              <CopyButton textToCopy={`margin: ${marginAll};`} />
+              <CopyButton textToCopy={`margin: ${marginAll}px;`} />
             </div>            
             
             <div className="flex gap-8">
@@ -937,7 +937,7 @@ export default function Vistool() {
 
             <div className="flex items-center text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
               <span>padding: <span className="text-sky-600 dark:text-sky-400">{paddingAll}px</span>;</span>
-              <CopyButton textToCopy={`padding: ${paddingAll};`} />
+              <CopyButton textToCopy={`padding: ${paddingAll}px;`} />
             </div>
             
             <div className="flex gap-8">
