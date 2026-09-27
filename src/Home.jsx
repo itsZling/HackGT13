@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export default function Home() {
   return (
-    <div className="w-full min-h-[calc(100vh-73px)] flex flex-col items-center p-8 overflow-y-auto scroll-smooth">
+    <div className="w-full h-[calc(100vh-73px)] flex flex-col items-center p-8 overflow-y-auto scroll-smooth">
       <div className="max-w-5xl w-full space-y-16 py-12 pb-32">
         
         {/* HERO SECTION */}

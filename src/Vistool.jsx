@@ -26,7 +26,7 @@ export default function Vistool() {
   const [gradColor2, setGradColor2] = useState('#fde68a')
   const [gradDirection, setGradDirection] = useState('to bottom right')
   // Helper function to calculate if a color is light or dark
-const getContrastColor = (hexColor) => {
+  const getContrastColor = (hexColor) => {
   // Check if it's a valid hex code, default to white if not
   if (!/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hexColor)) return '#ffffff';
   
@@ -110,6 +110,30 @@ const getContrastColor = (hexColor) => {
   const [zIndexTarget, setZIndexTarget] = useState(10)
   const [zCount, setZCount] = useState(2)
 
+  // Reusable Copy Button Component
+  const CopyButton = ({ textToCopy }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(textToCopy);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // Reset icon after 2 seconds
+  };
+
+  return (
+    <button 
+      onClick={handleCopy}
+      className="ml-4 p-1.5 text-slate-400 hover:text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-900/30 rounded-md transition-all focus:outline-none"
+      title="Copy CSS"
+    >
+      {copied ? (
+        <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+      ) : (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+      )}
+    </button>
+  );
+};
   return (
     <div className="flex grow w-full h-[calc(100vh-73px)]">
       <Navbar type="Topics" items={Topics} />
@@ -130,12 +154,15 @@ const getContrastColor = (hexColor) => {
             </p>
 
             <div className="flex flex-col gap-3 mb-8">
-              <p className="text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
-                background-color: <span className="text-sky-600 dark:text-sky-400">{bgColor}</span>;
-              </p>
-              <p className="text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
-                background-image: <span className="text-emerald-600 dark:text-emerald-400">linear-gradient</span>({gradDirection}, <span className="text-sky-600 dark:text-sky-400">{gradColor1}</span>, <span className="text-amber-600 dark:text-amber-400">{gradColor2}</span>);
-              </p>
+              <div className="flex items-center text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+                <span>background-color: <span className="text-sky-600 dark:text-sky-400">{bgColor}</span>;</span>
+                <CopyButton textToCopy={`background-color: ${bgColor};`} />
+              </div>
+              
+              <div className="flex items-center text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+                <span>background-image: <span className="text-emerald-600 dark:text-emerald-400">linear-gradient</span>({gradDirection}, <span className="text-sky-600 dark:text-sky-400">{gradColor1}</span>, <span className="text-amber-600 dark:text-amber-400">{gradColor2}</span>);</span>
+                <CopyButton textToCopy={`background-image: linear-gradient(${gradDirection}, ${gradColor1},${gradColor2});`} />
+              </div>
             </div>
             
             <div className="flex flex-col gap-10">
@@ -255,9 +282,10 @@ const getContrastColor = (hexColor) => {
             <p className="text-slate-600 dark:text-slate-400 mb-6">
               The border property dictates the boundary around an element's content and padding.
             </p>
-            <p className="text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 inline-block shadow-sm">
-              border: <span className="text-sky-600 dark:text-sky-400">{borderWidth}px</span> <span className="text-emerald-600 dark:text-emerald-400">{borderStyle}</span> <span className="text-purple-600 dark:text-purple-400">{borderColor}</span>;
-            </p>
+            <div className="flex items-center text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+              <span>border: <span className="text-sky-600 dark:text-sky-400">{borderWidth}px</span> <span className="text-emerald-600 dark:text-emerald-400">{borderStyle}</span> <span className="text-purple-600 dark:text-purple-400">{borderColor}</span>;</span>
+              <CopyButton textToCopy={`border: ${borderWidth}px ${borderStyle}${borderColor};`} />
+            </div>
 
             <div className="flex gap-8">
               <div className="w-1/3 flex flex-col gap-6">
@@ -340,12 +368,16 @@ const getContrastColor = (hexColor) => {
             </p>
             
             <div className="flex gap-4 mb-8">
-              <p className="text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm">
-                width: <span className="text-sky-600 dark:text-sky-400">{dimWidth}px</span>;
-              </p>
-              <p className="text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm">
-                height: <span className="text-emerald-600 dark:text-emerald-400">{dimHeight}px</span>;
-              </p>
+              <div className='flex items-center w-fit text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm'>
+                <span>width: <span className="text-sky-600 dark:text-sky-400">{dimWidth}px</span>;</span>
+                <CopyButton textToCopy={`width: ${dimWidth};`} />
+              </div>
+
+              <div className='flex items-center w-fit text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm'>
+                <span>height: <span className="text-emerald-600 dark:text-emerald-400">{dimHeight}px</span>;</span>
+                <CopyButton textToCopy={`height: ${dimHeight};`} />
+              </div>
+
             </div>
 
             <div className="flex gap-8">
@@ -402,9 +434,10 @@ const getContrastColor = (hexColor) => {
               Determines whether an element is treated as a block or inline element, and sets the layout model used for its children.
             </p>
             
-            <p className="text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 inline-block shadow-sm">
-              display: <span className="text-sky-600 dark:text-sky-400">{displayVal}</span>;
-            </p>
+            <div className='flex items-center w-fit text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm'>
+                <span>display: <span className="text-sky-600 dark:text-sky-400">{displayVal}</span>;</span>
+                <CopyButton textToCopy={`display: ${displayVal};`} />
+            </div>
 
             <div className="flex gap-8">
               <div className="w-1/3 flex flex-col gap-6">
@@ -464,9 +497,10 @@ const getContrastColor = (hexColor) => {
               Flexbox provides a one-dimensional layout method for arranging items in rows or columns, managing their alignment and space distribution.
             </p>
 
-            <p className="text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 inline-block shadow-sm">
-              flex-direction: <span className="text-sky-600 dark:text-sky-400">{flexDir}</span>;
-            </p>
+            <div className='flex items-center w-fit text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm'>
+                <span>flex-direction: <span className="text-sky-600 dark:text-sky-400">{flexDir}</span>;</span>
+                <CopyButton textToCopy={`flex: ${flexDir};`} />
+            </div>
             
             <div className="flex gap-8">
               <div className="w-1/3 flex flex-col gap-6">
@@ -521,9 +555,10 @@ const getContrastColor = (hexColor) => {
               Defines the typographic characteristics of text elements, dictating how characters are rendered.
             </p>
 
-            <p className="text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 inline-block shadow-sm">
-              font: <span className="text-sky-600 dark:text-sky-400">{fontStyle}</span> <span className="text-purple-600 dark:text-purple-400">{fontWeight}</span> <span className="text-pink-600 dark:text-pink-400">{fontSize}px</span> <span className="text-amber-600 dark:text-amber-400">{fontFamily}</span>;
-            </p>
+            <div className="flex items-center text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+              <span>font: <span className="text-sky-600 dark:text-sky-400">{fontStyle}</span> <span className="text-purple-600 dark:text-purple-400">{fontWeight}</span> <span className="text-pink-600 dark:text-pink-400">{fontSize}px</span> <span className="text-amber-600 dark:text-amber-400">{fontFamily}</span>;</span>
+              <CopyButton textToCopy={`font: ${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily};`} />
+            </div>
 
             <div className="flex gap-8">
               <div className="w-1/3 flex flex-col gap-6">
@@ -597,12 +632,14 @@ const getContrastColor = (hexColor) => {
             </p>
 
             <div className="flex flex-col gap-3 mb-8">
-              <p className="text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm w-fit">
-                grid-template-columns: <span className="text-sky-600 dark:text-sky-400">repeat({gridCols}, 1fr)</span>;
-              </p>
-              <p className="text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm w-fit">
-                gap: <span className="text-emerald-600 dark:text-emerald-400">{gridGap}px</span>;
-              </p>
+              <div className="flex items-center text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+                <span>grid-template-columns: <span className="text-sky-600 dark:text-sky-400">repeat({gridCols}, 1fr)</span>;</span>
+                <CopyButton textToCopy={`grid-template-columns: repeat(${gridCols}, 1fr);`} />
+              </div>
+              <div className="flex items-center text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+                <span>gap: <span className="text-emerald-600 dark:text-emerald-400">{gridGap}px</span>;</span>
+                <CopyButton textToCopy={`gap: ${gridGap}px;`} />
+              </div>
             </div>
 
             <div className="flex gap-8">
@@ -709,14 +746,21 @@ const getContrastColor = (hexColor) => {
             </div>
 
             <div className="flex flex-col md:flex-row gap-4 mb-8">
-              <div className="grow text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-4 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm text-sm">
-                <span className="text-sky-600 dark:text-sky-400 font-bold block mb-2 uppercase tracking-wide text-xs">Container Properties</span>
-                justify-content: <span className="text-slate-500">{justifyContent}</span>;<br/>
-                align-items: <span className="text-slate-500">{alignItems}</span>;
+              <div className="flex justify-between items-start grow text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-4 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm text-sm">
+                <div>
+                  <span className="text-sky-600 dark:text-sky-400 font-bold block mb-2 uppercase tracking-wide text-xs">Container Properties</span>
+                  justify-content: <span className="text-slate-500">{justifyContent}</span>;<br/>
+                  align-items: <span className="text-slate-500">{alignItems}</span>;
+                </div>
+                <CopyButton textToCopy={`justify-content: ${justifyContent};\nalign-items: ${alignItems};`} />
               </div>
-              <div className="grow text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-4 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm text-sm">
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold block mb-2 uppercase tracking-wide text-xs">Individual Item Properties</span>
-                align-self: <span className="text-slate-500">{alignSelf}</span>;
+              
+              <div className="flex justify-between items-start grow text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-4 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm text-sm">
+                <div>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold block mb-2 uppercase tracking-wide text-xs">Individual Item Properties</span>
+                  align-self: <span className="text-slate-500">{alignSelf}</span>;
+                </div>
+                <CopyButton textToCopy={`align-self: ${alignSelf};`} />
               </div>
             </div>
 
@@ -820,9 +864,10 @@ const getContrastColor = (hexColor) => {
               Creates space around elements, completely outside of any defined borders, effectively pushing adjacent elements away.
             </p>
 
-            <p className="text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 inline-block shadow-sm">
-              margin: <span className="text-sky-600 dark:text-sky-400">{marginAll}px</span>;
-            </p>
+            <div className="flex items-center text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+              <span>margin: <span className="text-sky-600 dark:text-sky-400">{marginAll}px</span>;</span>
+              <CopyButton textToCopy={`margin: ${marginAll};`} />
+            </div>            
             
             <div className="flex gap-8">
               <div className="w-1/3 flex flex-col gap-6">
@@ -890,9 +935,10 @@ const getContrastColor = (hexColor) => {
               Creates internal space around an element's content, pushing the border outward and increasing the element's total size.
             </p>
 
-            <p className="text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 inline-block shadow-sm">
-              padding: <span className="text-sky-600 dark:text-sky-400">{paddingAll}px</span>;
-            </p>
+            <div className="flex items-center text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+              <span>padding: <span className="text-sky-600 dark:text-sky-400">{paddingAll}px</span>;</span>
+              <CopyButton textToCopy={`padding: ${paddingAll};`} />
+            </div>
             
             <div className="flex gap-8">
               <div className="w-1/3 flex flex-col gap-6">
@@ -925,10 +971,13 @@ const getContrastColor = (hexColor) => {
               Specifies how an element is positioned in a document (static, relative, absolute, fixed, or sticky) and anchors it using directional offsets.
             </p>
 
-            <div className="text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-4 rounded-md border border-slate-300 dark:border-slate-700 inline-block shadow-sm text-sm">
-              position: <span className="text-sky-600 dark:text-sky-400">{posType}</span>;<br/>
-              top: <span className="text-emerald-600 dark:text-emerald-400">{posTop}px</span>;<br/>
-              left: <span className="text-emerald-600 dark:text-emerald-400">{posLeft}px</span>;
+            <div className="flex items-start text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-4 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+              <div>
+                position: <span className="text-sky-600 dark:text-sky-400">{posType}</span>;<br/>
+                top: <span className="text-emerald-600 dark:text-emerald-400">{posTop}px</span>;<br/>
+                left: <span className="text-emerald-600 dark:text-emerald-400">{posLeft}px</span>;
+              </div>
+              <CopyButton textToCopy={`position: ${posType};\ntop: ${posTop}px;\nleft:${posLeft}px;`} />
             </div>
 
             <div className="flex gap-8">
@@ -1019,17 +1068,16 @@ const getContrastColor = (hexColor) => {
               Applies drop shadows to the element's bounding box (box-shadow) or directly to its text (text-shadow) to create the illusion of depth.
             </p>
 
-            <div className="flex flex-col gap-3 mb-8">
-              <p className="text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm w-fit text-sm">
-                text-shadow: <span className="text-sky-600 dark:text-sky-400">{shadowH}px</span> <span className="text-emerald-600 dark:text-emerald-400">{shadowV}px</span> <span className="text-purple-600 dark:text-purple-400">{shadowBlur}px</span> <span className="text-pink-600 dark:text-pink-400">{shadowSpread}px</span> <span className="text-amber-600 dark:text-amber-400">{shadowColor}</span>;
-              </p>
+            <div className="flex items-center text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+              <span>text-shadow: <span className="text-sky-600 dark:text-sky-400">{shadowH}px</span> <span className="text-emerald-600 dark:text-emerald-400">{shadowV}px</span> <span className="text-purple-600 dark:text-purple-400">{shadowBlur}px</span> <span className="text-pink-600 dark:text-pink-400">{shadowSpread}px</span> <span className="text-amber-600 dark:text-amber-400">{shadowColor}</span>;</span>
+              <CopyButton textToCopy={`text-shadow: ${shadowH}px ${shadowV}px ${shadowBlur}px ${shadowSpread}px ${shadowColor};`} />
             </div>
 
-            <div className="flex flex-col gap-3 mb-8">
-              <p className="text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 shadow-sm w-fit text-sm">
-                box-shadow: <span className="text-sky-600 dark:text-sky-400">{shadowH}px</span> <span className="text-emerald-600 dark:text-emerald-400">{shadowV}px</span> <span className="text-purple-600 dark:text-purple-400">{shadowBlur}px</span> <span className="text-pink-600 dark:text-pink-400">{shadowSpread}px</span> <span className="text-amber-600 dark:text-amber-400">{shadowColor}</span>;
-              </p>
+            <div className="flex items-center text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+              <span>box-shadow: <span className="text-sky-600 dark:text-sky-400">{shadowH}px</span> <span className="text-emerald-600 dark:text-emerald-400">{shadowV}px</span> <span className="text-purple-600 dark:text-purple-400">{shadowBlur}px</span> <span className="text-pink-600 dark:text-pink-400">{shadowSpread}px</span> <span className="text-amber-600 dark:text-amber-400">{shadowColor}</span>;</span>
+              <CopyButton textToCopy={`text-shadow: ${shadowH}px ${shadowV}px ${shadowBlur}px ${shadowSpread}px ${shadowColor};`} />
             </div>
+
 
             <div className="flex gap-8">
               <div className="w-1/3 flex flex-col gap-6">
@@ -1114,12 +1162,17 @@ const getContrastColor = (hexColor) => {
               Modifies the coordinate space of the CSS visual formatting model, allowing elements to be rotated, scaled, skewed, or translated.
             </p>
 
-            <p className="text-slate-800 dark:text-slate-200 mb-6 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 inline-block shadow-sm">
-              transform: <span className="text-sky-600 dark:text-sky-400">translateX({tfTranslateX}px)</span> <span className="text-emerald-600 dark:text-emerald-400">scale({tfScale})</span> <span className="text-purple-600 dark:text-purple-400">rotate({tfRotate}deg)</span> <span className="text-pink-600 dark:text-pink-400">skewX({tfSkewX}deg)</span>;
-            </p>
-            <p className="text-slate-800 dark:text-slate-200 mb-6 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 inline-block shadow-sm">
-              transform-origin: <span className="text-orange-600 dark:text-orange-400">{tfTranslateX}</span>;
-            </p>
+            <div className="flex flex-col gap-3 mb-6">
+              <div className="flex items-center text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+                <span>transform: <span className="text-sky-600 dark:text-sky-400">translateX({tfTranslateX}px)</span> <span className="text-emerald-600 dark:text-emerald-400">scale({tfScale})</span> <span className="text-purple-600 dark:text-purple-400">rotate({tfRotate}deg)</span> <span className="text-pink-600 dark:text-pink-400">skewX({tfSkewX}deg)</span>;</span>
+                <CopyButton textToCopy={`transform: translateX(${tfTranslateX}px) scale(${tfScale}) rotate(${tfRotate}deg) skewX(${tfSkewX}deg);`} />
+              </div>
+              
+              <div className="flex items-center text-slate-800 dark:text-slate-200 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+                <span>transform-origin: <span className="text-orange-600 dark:text-orange-400">{tfOrigin}</span>;</span>
+                <CopyButton textToCopy={`transform-origin: ${tfOrigin};`} />
+              </div>
+            </div>
 
             <div className="overflow-hidden rounded-lg border border-slate-300 dark:border-slate-700 mb-8 bg-slate-100 dark:bg-slate-900/50 shadow-sm">
               <table className="w-full text-left text-sm text-slate-700 dark:text-slate-300">
@@ -1225,9 +1278,10 @@ const getContrastColor = (hexColor) => {
               Controls the vertical stacking order of elements that overlap, determining which elements appear in front of others.
             </p>
 
-            <p className="text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 inline-block shadow-sm">
-              z-index: <span className="text-sky-600 dark:text-sky-400">{zIndexTarget}</span>;
-            </p>
+            <div className="flex items-center text-slate-800 dark:text-slate-200 mb-8 font-mono bg-white/50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-300 dark:border-slate-700 w-fit shadow-sm text-sm">
+              <span>z-index: <span className="text-sky-600 dark:text-sky-400">{zIndexTarget}</span>;</span>
+              <CopyButton textToCopy={`z-index: ${zIndexTarget};`} />
+            </div>
 
             <div className="flex gap-8">
               <div className="w-1/3 flex flex-col gap-6">
